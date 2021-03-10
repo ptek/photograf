@@ -1,0 +1,43 @@
+body, html, p, div, img {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	text-align: center;
+	width: 98%;
+}
+
+div#original_view {
+	position: fixed;
+	display: none;
+	width: 100%;
+	height: 100%;
+}
+
+div#gallery {
+	width: 804px;
+	border: 1px solid #eee;
+	margin: 0 auto;
+	text-align: left;
+}
+
+div.picture {
+	display: inline-block;
+	width:200px;
+	height:200px;
+	background:#eee;
+	border:0.1px solid #aaa;
+	font-size:2em;
+}
+
+
+div.hoverShowEarlier {
+	border-left: 10px solid rgb(90, 147, 189);
+	box-sizing: border-box;
+}
+
+div.hoverShowLater {
+	border-right: 10px solid rgb(90, 147, 189);
+	box-sizing: border-box;
+}
