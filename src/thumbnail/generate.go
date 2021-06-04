@@ -1,67 +1,109 @@
 package thumbnail
 
 import (
-	"fmt"
-	"github.com/edwvee/exiffix"
-	"github.com/nfnt/resize"
-	"image"
-	"image/jpeg"
-	"io/ioutil"
-	"log"
-	"os"
-	"strings"
+  "fmt"
+  "image"
+  "image/jpeg"
+  "io/ioutil"
+  "log"
+  "os"
+  "path/filepath"
+  "strings"
+
+  "github.com/andreaskoch/go-fswatch"
+  "github.com/edwvee/exiffix"
+  "github.com/nfnt/resize"
 )
 
-func Generate(originalsDir, thumbnailsDir string, regenerate bool) {
-	files, err := ioutil.ReadDir(originalsDir)
-	if err != nil {
-		log.Fatal(err)
-	}
+func watchForChanges(originalsDir, thumbnailsDir string) {
+  recurse := true // include all sub directories
 
-	if err := os.MkdirAll(thumbnailsDir, 0755); err != nil {
-		log.Fatal(err)
-	}
+  skipDotFilesAndFolders := func(path string) bool {
+    return strings.HasPrefix(filepath.Base(path), ".")
+  }
 
-	for _, file := range files {
-		originalPicturePath := originalsDir + "/" + file.Name()
+  checkIntervalInSeconds := 1
 
-		if strings.Contains(strings.ToLower(originalPicturePath), ".jpg") || strings.Contains(strings.ToLower(originalPicturePath), ".jpeg") {
-			thumbnailPath := thumbnailsDir + "/" + file.Name()
+  folderWatcher := fswatch.NewFolderWatcher(
+    originalsDir,
+    recurse,
+    skipDotFilesAndFolders,
+    checkIntervalInSeconds,
+  )
 
-			if _, err := os.Stat(thumbnailPath); !(err == nil && regenerate == false) {
-				resizeAndCrop(originalPicturePath, thumbnailPath)
-			}
-		}
-	}
+  folderWatcher.Start()
+  for folderWatcher.IsRunning() {
+
+    select {
+    case changes := <-folderWatcher.ChangeDetails():
+      for _, file := range changes.New() {
+        thumbnailPath := thumbnailsDir + "/" + filepath.Base(file)
+        makeThumbnail(file, thumbnailPath)
+      }
+      for _, file := range changes.Modified() {
+        thumbnailPath := thumbnailsDir + "/" + filepath.Base(file)
+        makeThumbnail(file, thumbnailPath)
+      }
+      for _, file := range changes.Moved() {
+        thumbnailPath := thumbnailsDir + "/" + filepath.Base(file)
+        _ = os.Remove(thumbnailPath)
+      }
+    }
+  }
 }
 
-func resizeAndCrop(originalPicturePath, thumbnailPath string) {
-	file, err := os.Open(originalPicturePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
+func Generate(originalsDir, thumbnailsDir string, regenerate bool) {
+  files, err := ioutil.ReadDir(originalsDir)
+  if err != nil {
+    log.Fatal(err)
+  }
 
-	picture, _, err := exiffix.Decode(file)
-	if err != nil {
-		log.Fatal(err)
-	}
+  if err := os.MkdirAll(thumbnailsDir, 0755); err != nil {
+    log.Fatal(err)
+  }
 
-	pictureDimensions := picture.Bounds()
+  for _, file := range files {
+    originalPicturePath := originalsDir + "/" + file.Name()
 
-	var resized image.Image
-	if pictureDimensions.Dx() > pictureDimensions.Dy() {
-		resized = resize.Resize(0, 200, picture, resize.NearestNeighbor)
-	} else {
-		resized = resize.Resize(200, 0, picture, resize.NearestNeighbor)
-	}
+    if strings.Contains(strings.ToLower(originalPicturePath), ".jpg") || strings.Contains(strings.ToLower(originalPicturePath), ".jpeg") {
+      thumbnailPath := thumbnailsDir + "/" + file.Name()
 
-	outputFile, err := os.Create(thumbnailPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer outputFile.Close()
+      if _, err := os.Stat(thumbnailPath); !(err == nil && regenerate == false) {
+        makeThumbnail(originalPicturePath, thumbnailPath)
+      }
+    }
+  }
 
-	jpeg.Encode(outputFile, resized, nil)
-	fmt.Print(".")
+  watchForChanges(originalsDir, thumbnailsDir)
+}
+
+func makeThumbnail(originalPicturePath, thumbnailPath string) {
+  file, err := os.Open(originalPicturePath)
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer file.Close()
+
+  picture, _, err := exiffix.Decode(file)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  pictureDimensions := picture.Bounds()
+
+  var resized image.Image
+  if pictureDimensions.Dx() > pictureDimensions.Dy() {
+    resized = resize.Resize(0, 200, picture, resize.NearestNeighbor)
+  } else {
+    resized = resize.Resize(200, 0, picture, resize.NearestNeighbor)
+  }
+
+  outputFile, err := os.Create(thumbnailPath)
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer outputFile.Close()
+
+  jpeg.Encode(outputFile, resized, nil)
+  fmt.Print(".")
 }

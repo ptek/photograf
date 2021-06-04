@@ -1,12 +1,35 @@
 let apiUrl="/api/thumbnails/"
 
 window.onscroll = fillGallery;
+window.onkeydown = actUponKeyPressed;
 const RootGalleryElement = document.getElementById("gallery");
 const RootOriginalViewElement = document.getElementById("original_view");
 var imageCount = 0;
 
 async function main() {
 	getNextImages()
+}
+
+function actUponKeyPressed(e) {
+	e = e || window.event;
+
+	switch(e.keyCode) {
+		case 27:
+			// escape
+			hideOriginal();
+			break;
+		case 38: 
+			// arrow up
+			hideOriginal();
+			break;
+        case 37:
+        	console.log("left arrow");
+        	break;
+        case 39:
+        	console.log("right arrow");        
+            break;
+    }
+
 }
 
 async function fillGallery() {
@@ -96,4 +119,6 @@ async function hideOriginal() {
   	}
 }
 
-main().catch((error) => console.error(error))
+function photograf_main() {
+	main().catch((error) => console.error(error))
+}

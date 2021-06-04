@@ -3,10 +3,12 @@ module api
 go 1.16
 
 require (
+	github.com/andreaskoch/go-fswatch v1.0.0 // indirect
 	github.com/disintegration/imaging v1.6.2 // indirect
 	github.com/edwvee/exiffix v0.0.0-20190810152521-16aac9658f23 // indirect
 	github.com/gin-gonic/contrib v0.0.0-20201101042839-6a891bf89f19 // indirect
 	github.com/gin-gonic/gin v1.6.3 // indirect
+	github.com/go-fsnotify/fsnotify v0.0.0-20180321022601-755488143dae // indirect
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect

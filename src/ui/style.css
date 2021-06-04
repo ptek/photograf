@@ -8,6 +8,11 @@ body {
 	width: 98%;
 }
 
+body {
+  background-color: #eee;
+  color: #333;
+}
+
 div#original_view {
 	position: fixed;
 	display: none;
@@ -40,4 +45,15 @@ div.hoverShowEarlier {
 div.hoverShowLater {
 	border-right: 10px solid rgb(90, 147, 189);
 	box-sizing: border-box;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+  body {
+    background-color: #333;
+    color: #eee;
+  }
+
+  div#gallery {
+  	border: 1px solid #444;
+  }
 }

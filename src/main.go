@@ -1,20 +1,21 @@
 package main
 
 import (
-  "github.com/gin-gonic/gin"
-  "html/template"
-  "net/http"
-  "strconv"
   "api/thumbnail"
-  "log"
-  "os"
   "embed"
+  "html/template"
+  "log"
+  "net/http"
+  "os"
+  "strconv"
+
+  "github.com/gin-gonic/gin"
 )
 
 var html = template.Must(template.New("https").Parse(`
 <html>
   <head>
-    <title>Lightplay</title>
+    <title>Photograf</title>
     <link rel="stylesheet" href="/ui/style.css">
   </head>
   <body>
@@ -22,6 +23,7 @@ var html = template.Must(template.New("https").Parse(`
     <div id="gallery"></div>
   </body>
   <script src="/ui/index.js"></script>
+  <script>photograf_main()</script>
 </html>
 `))
 
@@ -54,17 +56,19 @@ func certs() string {
   if len(dir) == 0 {
     dir = "./cert"
   }
-  return dir 
+  return dir
 }
 
 //go:embed ui/*
 var uiContent embed.FS
 
 func StaticHandler(c *gin.Context) {
-      filePath := c.Param("filepath")
-      data, err := uiContent.ReadFile("ui"+filePath)
-      if err != nil { return }
-      c.Writer.Write(data)
+  filePath := c.Param("filepath")
+  data, err := uiContent.ReadFile("ui" + filePath)
+  if err != nil {
+    return
+  }
+  c.Writer.Write(data)
 }
 
 func init() {

@@ -1,8 +1,8 @@
 package thumbnail
 
 import (
-	"log"
 	"io/ioutil"
+	"log"
 	"sort"
 )
 
