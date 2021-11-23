@@ -1,7 +1,6 @@
 package main
 
 import (
-  "api/thumbnail"
   "embed"
   "html/template"
   "log"
@@ -10,6 +9,8 @@ import (
   "strconv"
 
   "github.com/gin-gonic/gin"
+
+  "github.com/ptek/photograf/thumbnail"
 )
 
 var html = template.Must(template.New("https").Parse(`

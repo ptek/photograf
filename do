@@ -7,17 +7,13 @@ build() {
     rm -rf dist
     mkdir -p ./dist/bin
     
-    pushd ./src
-        env GOOS=linux GOARCH=arm64 go build -o ../dist/bin/photograf-arm64
-        go build -o ../dist/bin/photograf
-    popd
+    env GOOS=linux GOARCH=arm64 go build -o ./dist/bin/photograf-arm64 main.go
+    go build -o ./dist/bin/photograf main.go
 
 }
 
 run_dev() {
-    pushd src
-        ORIGINALS="../assets/pictures" THUMBNAILS="../assets/thumbnails" PORT=${PORT:-3000} go run main.go
-    pops
+    ORIGINALS="./assets/pictures" THUMBNAILS="./assets/thumbnails" PORT=${PORT:-3000} go run main.go
 }
 
 usage() {
