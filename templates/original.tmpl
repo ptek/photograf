@@ -15,8 +15,29 @@
         background-color: #222;
         "
     >
-        <button hx-target="#original_view" hx-get="/original/{{.previousItem}}">Newer</button>
-        <button hx-target="#original_view" hx-get="/empty">Close</button>
-        <button hx-target="#original_view" hx-get="/original/{{.nextItem}}">Older</button>
+        <button 
+            hx-target="#original_view"
+            hx-get="/original/{{.previousItem}}"
+            hx-trigger="click, keyup[key=='ArrowLeft'] from:body, keyup[key=='ArrowUp'] from:body"
+        >
+            Newer
+        </button>
+
+        <button
+            hx-target="#original_view"
+            hx-get="/empty"
+            hx-trigger="click, keyup[key=='Escape'] from:body"
+        >
+            Close
+        </button>
+
+        <button
+            hx-target="#original_view"
+            hx-get="/original/{{.nextItem}}"
+            hx-trigger="click, keyup[key=='ArrowRight'] from:body, keyup[key=='ArrowDown'] from:body"
+        >
+            Older
+        </button>
+
     </div>
 </div>
