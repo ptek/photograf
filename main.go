@@ -101,7 +101,6 @@ func main() {
 		c.Writer.WriteHeader(http.StatusOK)
 	})
 
-	log.Println("http://127.0.0.1:3000")
 	router.Run()
 }
 
@@ -109,7 +108,6 @@ func main() {
 
 func LoadHTMLFromEmbedFS(engine *gin.Engine, embedFS embed.FS, pattern string) {
 	templ := template.Must(template.ParseFS(embedFS, pattern))
-	log.Println("Templ: ", templ)
 	engine.SetHTMLTemplate(templ)
 }
 

@@ -5,16 +5,13 @@ body, html, p, div, img {
 
 body {
 	text-align: center;
-	width: 98%;
   background-color: #333;
   color: #333;
 }
 
 div#gallery {
-	width: 804px;
-	border: 1px solid #333;
+	min-width: 804px;
 	margin: 0 auto;
-	text-align: left;
 }
 
 div.picture {
@@ -23,6 +20,7 @@ div.picture {
 	height:200px;
 	background:#eee;
 	font-size:2em;
+	border: 1px solid #333;
 }
 
 div.hoverShowEarlier {
