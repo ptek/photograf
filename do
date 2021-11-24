@@ -3,16 +3,21 @@
 set -eu
 set -o pipefail
 
+fmt() (
+    go fmt ./...
+)
+
 build() {
     rm -rf dist
     mkdir -p ./dist/bin
     
-    env GOOS=linux GOARCH=arm64 go build -o ./dist/bin/photograf-arm64 main.go
-    go build -o ./dist/bin/photograf main.go
+    env GOOS=linux GOARCH=arm64 go build -o ./dist/bin/photograf-arm64
+    go build -o ./dist/bin/photograf
 
 }
 
 run_dev() {
+    fmt
     ORIGINALS="./assets/pictures" THUMBNAILS="./assets/thumbnails" PORT=${PORT:-3000} go run main.go
 }
 

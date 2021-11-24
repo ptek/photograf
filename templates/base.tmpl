@@ -1,0 +1,15 @@
+<html>
+  <head>
+    <title>Photograf</title>
+    <link rel="stylesheet" href="/ui/style.css">
+    <script src="https://unpkg.com/htmx.org@1.6.1" integrity="sha384-tvG/2mnCFmGQzYC1Oh3qxQ7CkQ9kMzYjWZSNtrRZygHPDDqottzEJsqS4oUVodhW" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div id="original_view"></div>
+    <div id="gallery">
+        <div class="loading" hx-get="/pictures/0" hx-trigger="revealed" hx-swap="outerHTML">
+            <img class="htmx-indicator" src="/ui/circles.svg" width="100px">
+        </div>
+    </div>
+  </body>
+</html>

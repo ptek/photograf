@@ -1,7 +1,6 @@
 package thumbnail
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -87,5 +86,5 @@ func makeThumbnail(originalPicturePath, thumbnailPath string) {
 		log.Fatalf("failed to save thumbnail: %v", err)
 	}
 
-	fmt.Print(".")
+	log.Print(".")
 }

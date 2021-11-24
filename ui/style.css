@@ -6,23 +6,13 @@ body, html, p, div, img {
 body {
 	text-align: center;
 	width: 98%;
-}
-
-body {
-  background-color: #eee;
+  background-color: #333;
   color: #333;
-}
-
-div#original_view {
-	position: fixed;
-	display: none;
-	width: 100%;
-	height: 100%;
 }
 
 div#gallery {
 	width: 804px;
-	border: 1px solid #eee;
+	border: 1px solid #333;
 	margin: 0 auto;
 	text-align: left;
 }
@@ -32,10 +22,8 @@ div.picture {
 	width:200px;
 	height:200px;
 	background:#eee;
-	border:0.1px solid #aaa;
 	font-size:2em;
 }
-
 
 div.hoverShowEarlier {
 	border-left: 10px solid rgb(90, 147, 189);
@@ -46,6 +34,15 @@ div.hoverShowLater {
 	border-right: 10px solid rgb(90, 147, 189);
 	box-sizing: border-box;
 }
+
+div.loading {
+	text-align: center;
+}
+
+div.loading img {
+	margin: 0 auto;
+}
+
 
 @media screen and (prefers-color-scheme: dark) {
   body {

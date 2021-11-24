@@ -6,18 +6,18 @@ import (
 	"sort"
 )
 
-func RetrieveAll(thumbnailsDir string) []string {
+func RetrieveGalleryItems(thumbnailsDir string) []string {
 	thumbnailFiles, err := ioutil.ReadDir(thumbnailsDir)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var thumbnailNames []string
-	for _, thumbnailFile := range thumbnailFiles {
-		thumbnailNames = append(thumbnailNames, thumbnailFile.Name())
+	var galleryItems []string
+	for _, item := range thumbnailFiles {
+		galleryItems = append(galleryItems, item.Name())
 	}
 
-	sort.Sort(sort.Reverse(sort.StringSlice(thumbnailNames)))
+	sort.Sort(sort.Reverse(sort.StringSlice(galleryItems)))
 
-	return thumbnailNames
+	return galleryItems
 }
