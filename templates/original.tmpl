@@ -18,7 +18,7 @@
         <button 
             hx-target="#original_view"
             hx-get="/original/{{.previousItem}}"
-            hx-trigger="click, keyup[key=='ArrowLeft'] from:body, keyup[key=='ArrowUp'] from:body"
+            hx-trigger="click, keyup[key=='ArrowLeft'] from:body, keyup[key=='ArrowUp'] from:body, keyup[key=='a'] from:body"
         >
             Newer
         </button>
@@ -34,7 +34,7 @@
         <button
             hx-target="#original_view"
             hx-get="/original/{{.nextItem}}"
-            hx-trigger="click, keyup[key=='ArrowRight'] from:body, keyup[key=='ArrowDown'] from:body"
+            hx-trigger="click, keyup[key=='ArrowRight'] from:body, keyup[key=='ArrowDown'] from:body, keyup[key=='d'] from:body"
         >
             Older
         </button>
