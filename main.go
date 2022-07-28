@@ -22,6 +22,8 @@ var uiContentFS embed.FS
 
 func main() {
 	router := gin.Default()
+	router.SetTrustedProxies([]string{})
+
 	LoadHTMLFromEmbedFS(router, templatesFS, "templates/*")
 
 	router.StaticFS("/ui", UiFS())

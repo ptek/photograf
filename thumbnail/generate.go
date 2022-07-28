@@ -7,45 +7,52 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/andreaskoch/go-fswatch"
 	"github.com/disintegration/imaging"
+	"github.com/fsnotify/fsnotify"
 )
 
 func watchForChanges(originalsDir, thumbnailsDir string) {
-	recurse := true // include all sub directories
-
-	skipDotFilesAndFolders := func(path string) bool {
-		return strings.HasPrefix(filepath.Base(path), ".")
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		log.Fatal(err)
 	}
+	defer watcher.Close()
 
-	checkIntervalInSeconds := 1
+	done := make(chan bool)
+	go func() {
+		for {
+			select {
+			case event, ok := <-watcher.Events:
+				if !ok {
+					return
+				}
+				if event.Op&fsnotify.Create == fsnotify.Create {
+					thumbnailPath := thumbnailsDir + "/" + filepath.Base(event.Name)
+					makeThumbnail(event.Name, thumbnailPath)
+				}
+				if event.Op&fsnotify.Write == fsnotify.Write {
+					thumbnailPath := thumbnailsDir + "/" + filepath.Base(event.Name)
+					makeThumbnail(event.Name, thumbnailPath)
+				}
+				if event.Op&fsnotify.Rename == fsnotify.Rename {
+					thumbnailPath := thumbnailsDir + "/" + filepath.Base(event.Name)
+					makeThumbnail(event.Name, thumbnailPath)
+				}
 
-	folderWatcher := fswatch.NewFolderWatcher(
-		originalsDir,
-		recurse,
-		skipDotFilesAndFolders,
-		checkIntervalInSeconds,
-	)
-
-	folderWatcher.Start()
-	for folderWatcher.IsRunning() {
-
-		select {
-		case changes := <-folderWatcher.ChangeDetails():
-			for _, file := range changes.New() {
-				thumbnailPath := thumbnailsDir + "/" + filepath.Base(file)
-				makeThumbnail(file, thumbnailPath)
-			}
-			for _, file := range changes.Modified() {
-				thumbnailPath := thumbnailsDir + "/" + filepath.Base(file)
-				makeThumbnail(file, thumbnailPath)
-			}
-			for _, file := range changes.Moved() {
-				thumbnailPath := thumbnailsDir + "/" + filepath.Base(file)
-				_ = os.Remove(thumbnailPath)
+			case err, ok := <-watcher.Errors:
+				if !ok {
+					return
+				}
+				log.Fatal("error:", err)
 			}
 		}
+	}()
+
+	err = watcher.Add(originalsDir)
+	if err != nil {
+		log.Fatal(err)
 	}
+	<-done
 }
 
 func Generate(originalsDir, thumbnailsDir string, regenerate bool) {
@@ -86,5 +93,5 @@ func makeThumbnail(originalPicturePath, thumbnailPath string) {
 		log.Fatalf("failed to save thumbnail: %v", err)
 	}
 
-	log.Print(".")
+	log.Printf("Created thumbnail for: %s", originalPicturePath)
 }
